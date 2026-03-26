@@ -16,15 +16,26 @@ __device__ inline int getMaterialID(float x, float y, float z) {
 	// Per verificare se la particella si trova nel materiale utiliziamo le operazioni booleane.
 
 	// Verifichiamo se si trova dentro uranio. Alla fine dell operazione se la condizione si avvera, in_core ha valore 1
-	int in_core = (ix >= -1) * (ix <=1) * (iy >= -1) * (iy <=1) * (iz >= -1) * (iz <= 1); 
+//	int in_core = (ix >= -1) * (ix <=1) * (iy >= -1) * (iy <=1) * (iz >= -1) * (iz <= 1); 
 	// Facciamo lo stesso per gli matriali
-	int in_reactor = (ix >= -5) * (ix <= 5) * (iy >= -5) * (iy <= 5) * (iz >= -5) * (iz <= 5); 
-	int in_water = in_reactor * (1 - in_core);
-	int in_void = 1 - in_reactor;
+//	int in_reactor = (ix >= -5) * (ix <= 5) * (iy >= -5) * (iy <= 5) * (iz >= -5) * (iz <= 5); 
+//	int in_water = in_reactor * (1 - in_core);
+//	int in_void = 1 - in_reactor;
 	
 	// A questo punto abbiamo calcolato i risultati e vogliamo utilizzarli per fare un return dell indice del materiale corrispondente.
 	// Dove Acqua ha indice 0, Uranio 1 e Vuoto 2
 
-	return (in_water * 0) + (in_core * 1) + (in_void * 2);
+//	return (in_water * 0) + (in_core * 1) + (in_void * 2);
 
+	int final_mat_id = 2;
+	
+	for ( int i=0; i<d_num_regions; i++) {
+		Region r = d_regions[i];
+		int inside = (ix >= r.min_ix) * (ix <= r.max_ix) *
+			     (iy >= r.min_iy) * (iy <= r.max_iy) *
+			     (iz >= r.min_iz) * (iz <= r.max_iz);
+		final_mat_id = (inside * r.mat_id) + ((1 - inside) * final_mat_id);
+	}
+	return final_mat_id;
 }
+	

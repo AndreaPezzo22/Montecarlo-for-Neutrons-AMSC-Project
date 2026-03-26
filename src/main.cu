@@ -6,6 +6,8 @@
 
 // Dichiariamo le funzioni presenti in kernel.cu
 void loadMaterialsToGPU(Material* h_mats, int count);
+void loadRegionsToGPU(Region* h_rregions, int count);
+
 __global__ void traverse(float* posX, float* posY, float* posZ, float* dirX, float* dirY, float* dirZ, int* outMatID, int numParticles);
 
 int main() {
@@ -13,10 +15,16 @@ int main() {
 
     // 1. Prepariamo e carichiamo i materiali sulla GPU tramite la funzione ponte
     Material h_materials[3];
+    Region h_regions[2];
+
+    h_regions[0] = {-5, 5, -5, 5, -5, 5, 0}; // L'Acqua riempie la zona da -5 a +5 (ID 0)
+    h_regions[1] = {-1, 1, -1, 1, -1, 1, 1}; // L'Uranio sta al centro da -1 a +1 (ID 1)
+
     h_materials[0] = {0.1f, 0.05f, 0.15f}; // Acqua (ID 0)
     h_materials[1] = {0.2f, 0.8f, 1.00f};  // Uranio (ID 1)
     h_materials[2] = {0.0f, 0.0f, 0.00f};  // Vuoto (ID 2)
     loadMaterialsToGPU(h_materials, 3);
+    loadRegionsToGPU(h_regions, 2);
 
     // 2. Creiamo i dati sulla CPU (Host)
     float h_x, h_y, h_z;
