@@ -15,3 +15,8 @@ struct Region {
 	int min_iz, max_iz;
 	int mat_id;
 };
+
+// Struct Particella
+struct Particle {
+	float x, y, z;
+};

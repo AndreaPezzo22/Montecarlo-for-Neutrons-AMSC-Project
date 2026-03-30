@@ -16,6 +16,7 @@ int main() {
     // 1. Prepariamo e carichiamo i materiali sulla GPU tramite la funzione ponte
     Material h_materials[3];
     Region h_regions[2];
+    Particle h_particle;
 
     h_regions[0] = {-5, 5, -5, 5, -5, 5, 0}; // L'Acqua riempie la zona da -5 a +5 (ID 0)
     h_regions[1] = {-1, 1, -1, 1, -1, 1, 1}; // L'Uranio sta al centro da -1 a +1 (ID 1)
@@ -27,19 +28,17 @@ int main() {
     loadRegionsToGPU(h_regions, 2);
 
     // 2. Creiamo i dati sulla CPU (Host)
-    float h_x, h_y, h_z;
-    float h_dx = 0, h_dy = 0, h_dz = 0; // Direzioni vuote per ora
     int h_outMatID = -1;
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> dist(-20.0f, 20.0f);
 
-    h_x = dist(gen);
-    h_y = dist(gen);
-    h_z = dist(gen);
+    h_particle.x = dist(gen);
+    h_particle.y = dist(gen);
+    h_particle.z = dist(gen);
 
-    std::cout << "Coordinate generate: X=" << h_x << ", Y=" << h_y << ", Z=" << h_z << "\n";
+    std::cout << "Coordinate generate: X=" << h_particle.x << ", Y=" << h_particle.y << ", Z=" << h_particle.z << "\n";
 
     // 3. Allochiamo memoria fisica REALE sulla GPU
     float *d_x, *d_y, *d_z, *d_dx, *d_dy, *d_dz;
@@ -53,9 +52,9 @@ int main() {
     cudaMalloc(&d_outMatID, sizeof(int));
 
     // 4. Copiamo la posizione dalla CPU alla GPU
-    cudaMemcpy(d_x, &h_x, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, &h_y, sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_z, &h_z, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_x, &h_particle.x, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_y, &h_particle.y, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_z, &h_particle.z, sizeof(float), cudaMemcpyHostToDevice);
 
     // 5. Lanciamo il kernel
     traverse<<<1, 1>>>(d_x, d_y, d_z, d_dx, d_dy, d_dz, d_outMatID, numParticles);
