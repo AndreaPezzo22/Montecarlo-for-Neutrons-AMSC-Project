@@ -1,14 +1,12 @@
 #include <iostream>
-#include <iomanip>
 #include <random>
 #include <cuda_runtime.h>
-#include "../include/types.cuh"
+#include "types.cuh"
+#include "kernels.cuh"
 
-// Dichiariamo le funzioni presenti in kernel.cu
-void loadMaterialsToGPU(Material* h_mats, int count);
-void loadRegionsToGPU(Region* h_rregions, int count);
-
-__global__ void traverse(float* posX, float* posY, float* posZ, float* dirX, float* dirY, float* dirZ, int* outMatID, int numParticles);
+__constant__ Material c_materials[10];
+__constant__ Region c_regions[20]; 
+__constant__ int c_num_regions; // Quante scataole stiamo definendo
 
 int main() {
     int numParticles = 1;
@@ -24,8 +22,10 @@ int main() {
     h_materials[0] = {0.1f, 0.05f, 0.15f}; // Acqua (ID 0)
     h_materials[1] = {0.2f, 0.8f, 1.00f};  // Uranio (ID 1)
     h_materials[2] = {0.0f, 0.0f, 0.00f};  // Vuoto (ID 2)
-    loadMaterialsToGPU(h_materials, 3);
-    loadRegionsToGPU(h_regions, 2);
+
+    cudaMemcpyToSymbol(c_materials, h_mats, 3 * sizeof(Material)); // number hard coded for now
+	cudaMemcpyToSymbol(c_regions, h_region, 2 * sizeof(Region));
+	cudaMemcpyToSymbol(c_num_regions, &count, sizeof(int));
 
     // 2. Creiamo i dati sulla CPU (Host)
     int h_outMatID = -1;

@@ -1,6 +1,5 @@
-// Structs (Material, Particle) e memoria __constant__
-
-#pragma once
+#ifndef TYPES_H
+#define TYPES_H
 
 struct Material {
 	float sigma_s;
@@ -20,3 +19,5 @@ struct Region {
 struct Particle {
 	float x, y, z;
 };
+
+#endif
