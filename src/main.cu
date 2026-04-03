@@ -10,10 +10,11 @@ __constant__ int c_num_regions; // Quante scataole stiamo definendo
 
 int main() {
     int numParticles = 1;
+    int numRegions = 2;
 
     // 1. Prepariamo e carichiamo i materiali sulla GPU tramite la funzione ponte
     Material h_materials[3];
-    Region h_regions[2];
+    Region h_regions[numRegions];
     Particle h_particle;
 
     h_regions[0] = {-5, 5, -5, 5, -5, 5, 0}; // L'Acqua riempie la zona da -5 a +5 (ID 0)
@@ -23,9 +24,9 @@ int main() {
     h_materials[1] = {0.2f, 0.8f, 1.00f};  // Uranio (ID 1)
     h_materials[2] = {0.0f, 0.0f, 0.00f};  // Vuoto (ID 2)
 
-    cudaMemcpyToSymbol(c_materials, h_mats, 3 * sizeof(Material)); // number hard coded for now
-	cudaMemcpyToSymbol(c_regions, h_region, 2 * sizeof(Region));
-	cudaMemcpyToSymbol(c_num_regions, &count, sizeof(int));
+    cudaMemcpyToSymbol(c_materials, h_materials, 3 * sizeof(Material)); // number hard coded for now
+	cudaMemcpyToSymbol(c_regions, h_regions, numRegions * sizeof(Region));
+	cudaMemcpyToSymbol(c_num_regions, &numRegions, sizeof(int));
 
     // 2. Creiamo i dati sulla CPU (Host)
     int h_outMatID = -1;

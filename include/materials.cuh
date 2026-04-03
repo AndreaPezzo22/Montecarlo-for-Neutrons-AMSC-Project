@@ -1,7 +1,7 @@
 #ifndef MATERIALS_H
 #define MATERIALS_H
 
-extern __constant__ Region c_regions[20]; 
+extern __constant__ Region c_regions[]; 
 extern __constant__ int c_num_regions; 
 
 __device__ inline int getMaterialID(float x, float y, float z) {

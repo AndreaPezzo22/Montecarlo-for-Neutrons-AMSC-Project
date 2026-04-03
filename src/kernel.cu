@@ -20,10 +20,6 @@ __global__ void traverse (float* d_posX, float* d_posY, float* d_posZ,
 	// Calcolo ID materiale
 	prec_matID = getMaterialID(x, y, z);
 
-	
-
-	// Lettura sezioni d'urto corrispondenti a ID materiale
-	float sigma_t = d_materials[prec_matID].sigma_t;
 
 	d_outMatID[id] = prec_matID;
 }
