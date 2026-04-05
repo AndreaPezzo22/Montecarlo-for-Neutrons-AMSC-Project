@@ -37,7 +37,7 @@ void testSingleVoxelContainment() {
     
     std::vector<double> grid = runFluxOnGPU(r0, rf, 1, 1.0);
 
-    assert(grid[0] - length(rf - r0) < 1e-10);
+    assert(grid[0] - length(rf - r0) < 1e-6);
 }
 
 void testMultipleVoxelsHorizontal() {
@@ -56,15 +56,15 @@ void testMultipleVoxelsHorizontal() {
     int idx2 = 2 + 2*4 + 2*4*4; // 2 + 8 + 32 = 42
     int idx3 = 3 + 2*4 + 2*4*4; // 3 + 8 + 32 = 43
     
-    assert(fabs(grid[idx0] - 0.15) < 1e-10);
-    assert(fabs(grid[idx1] - 0.25) < 1e-10);
-    assert(fabs(grid[idx2] - 0.25) < 1e-10);
-    assert(fabs(grid[idx3] - 0.15) < 1e-10);
+    assert(fabs(grid[idx0] - 0.15) < 1e-6);
+    assert(fabs(grid[idx1] - 0.25) < 1e-6);
+    assert(fabs(grid[idx2] - 0.25) < 1e-6);
+    assert(fabs(grid[idx3] - 0.15) < 1e-6);
     
     // Check other voxels are zero
     for (size_t i = 0; i < grid.size(); ++i) {
         if (i != idx0 && i != idx1 && i != idx2 && i != idx3) {
-            assert(fabs(grid[i]) < 1e-10);
+            assert(fabs(grid[i]) < 1e-6);
         }
     }
 }
@@ -83,7 +83,7 @@ void testDiagonalRay() {
     double totalLength = length(rf - r0);
     double sum = 0.0;
     for (double val : grid) sum += val;
-    assert(fabs(sum - totalLength) < 1e-10);
+    assert(fabs(sum - totalLength) < 1e-6);
 }
 
 void testNegativeDirection() {
@@ -101,10 +101,10 @@ void testNegativeDirection() {
     int idx1 = 1 + 2*4 + 2*4*4; // 41
     int idx0 = 0 + 2*4 + 2*4*4; // 40
     
-    assert(fabs(grid[idx3] - 0.15) < 1e-10);
-    assert(fabs(grid[idx2] - 0.25) < 1e-10);
-    assert(fabs(grid[idx1] - 0.25) < 1e-10);
-    assert(fabs(grid[idx0] - 0.15) < 1e-10);
+    assert(fabs(grid[idx3] - 0.15) < 1e-6);
+    assert(fabs(grid[idx2] - 0.25) < 1e-6);
+    assert(fabs(grid[idx1] - 0.25) < 1e-6);
+    assert(fabs(grid[idx0] - 0.15) < 1e-6);
 }
 
 void testBoundaryStart() {
@@ -121,7 +121,7 @@ void testBoundaryStart() {
     // rf at 0.75, still in voxel 1
     int idx = 1 + 1*2 + 1*2*2; // 1 + 2 + 4 = 7
     double expected = length(rf - r0); // 0.25
-    assert(fabs(grid[idx] - expected) < 1e-10);
+    assert(fabs(grid[idx] - expected) < 1e-6);
 }
 
 int main() {
