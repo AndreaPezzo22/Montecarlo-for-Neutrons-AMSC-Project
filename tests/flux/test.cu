@@ -1,6 +1,7 @@
 #include "flux.cuh"
 #include <vector>
 #include <cassert>
+#include <iostream>
 
 void __global__ testFluxKernel(float3 r0, float3 rf, double* grid, uint gridSize, double voxelSize) {
     // We only need one thread to test a single ray's logic
@@ -38,6 +39,7 @@ void testSingleVoxelContainment() {
     std::vector<double> grid = runFluxOnGPU(r0, rf, 1, 1.0);
 
     assert(grid[0] - length(rf - r0) < 1e-6);
+    std::cout << "PASSED: testSingleVoxelContainment" << std::endl;
 }
 
 void testMultipleVoxelsHorizontal() {
@@ -67,6 +69,7 @@ void testMultipleVoxelsHorizontal() {
             assert(fabs(grid[i]) < 1e-6);
         }
     }
+    std::cout << "PASSED: testMultipleVoxelsHorizontal" << std::endl;
 }
 
 void testDiagonalRay() {
@@ -84,6 +87,7 @@ void testDiagonalRay() {
     double sum = 0.0;
     for (double val : grid) sum += val;
     assert(fabs(sum - totalLength) < 1e-6);
+    std::cout << "PASSED: testDiagonalRay" << std::endl;
 }
 
 void testNegativeDirection() {
@@ -105,6 +109,7 @@ void testNegativeDirection() {
     assert(fabs(grid[idx2] - 0.25) < 1e-6);
     assert(fabs(grid[idx1] - 0.25) < 1e-6);
     assert(fabs(grid[idx0] - 0.15) < 1e-6);
+    std::cout << "PASSED: testNegativeDirection" << std::endl;
 }
 
 void testBoundaryStart() {
@@ -122,6 +127,7 @@ void testBoundaryStart() {
     int idx = 1 + 1*2 + 1*2*2; // 1 + 2 + 4 = 7
     double expected = length(rf - r0); // 0.25
     assert(fabs(grid[idx] - expected) < 1e-6);
+    std::cout << "PASSED: testBoundaryStart" << std::endl;
 }
 
 int main() {
@@ -130,5 +136,6 @@ int main() {
     testDiagonalRay();
     testNegativeDirection();
     testBoundaryStart();
+    std::cout << "All flux tests passed!" << std::endl;
     return 0;
 }

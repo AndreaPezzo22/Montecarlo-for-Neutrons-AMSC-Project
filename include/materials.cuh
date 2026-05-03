@@ -4,14 +4,14 @@
 extern __constant__ Region c_regions[]; 
 extern __constant__ int c_num_regions; 
 
-__device__ inline int getMaterialID(float x, float y, float z) {
+__device__ inline u_int8_t getMaterialID(float3 r) {
 	// Calcolo indici del cubo ??
 	// TODO: togliere gli indici, usare solo coordinate
-	int ix = floor(x / 10.0f);
-	int iy = floor(y / 10.0f);
-	int iz = floor(z / 10.0f);
+	int ix = floor(r.x / 10.0f);
+	int iy = floor(r.y / 10.0f);
+	int iz = floor(r.z / 10.0f);
 
-	int final_mat_id = 2;
+	u_int8_t final_mat_id = 2;
 	
 	for ( int i=0; i<c_num_regions; i++) {
 		Region r = c_regions[i];
